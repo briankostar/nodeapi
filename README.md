@@ -1,4 +1,4 @@
-nodeapi
+nodeAPI
 =======
 
-practice making an api with node
+Practice making an api with node
