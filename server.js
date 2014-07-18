@@ -40,14 +40,57 @@ router.route('/pandas')
 	res.json({message: 'Panda created'});
     });
 })
-.get(function(res, req){
-    //allow GET request to /api/pandas return model.find, then respond with pandas data
-    Panda.find(function(err, pandas){
-	if(err)
+.get(function(req, res) {
+    Panda.find(function(err, pandas) {
+	if (err)
 	    res.send(err);
+
 	res.json(pandas);
-    });
+	});
 });
+
+router.route('/pandas/:panda_id')
+
+// get the bear with that id (accessed at GET http://localhost:8080/api/bears/:bear_id)
+.get(function(req, res) {
+    Panda.findById(req.params.panda_id, function(err, panda) {
+	if (err)
+	    res.send(err);
+	res.json(panda);
+	});
+    })
+// update the bear with this id (accessed at PUT http://localhost:8080/api/bears/:bear_id)
+.put(function(req, res) {
+
+    // use our bear model to find the bear we want
+    Panda.findById(req.params.panda_id, function(err, panda) {
+
+	if (err)
+	    res.send(err);
+
+	panda.name = req.body.name; // update the bears info
+
+	// save the bear
+	panda.save(function(err) {
+	    if (err)
+		res.send(err);
+
+	    res.json({ message: 'Panda updated!' });
+	    });
+
+	});
+    })
+// delete the bear with this id (accessed at DELETE http://localhost:8080/api/bears/:bear_id)
+.delete(function(req, res) {
+    Panda.remove({
+	_id: req.params.panda_id
+	}, function(err, panda) {
+	    if (err)
+		res.send(err);
+
+	    res.json({ message: 'Successfully deleted' + req.params.panda_id });
+	    });
+    });
 
 app.use('/api', router);
 
